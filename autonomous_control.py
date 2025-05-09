@@ -1,6 +1,8 @@
 import numpy as np
 import cv2 as cv
 import math
+from stepper import clockwise, counterclockwise, double_clockwise, double_counterclockwise
+
 
 cap = cv.VideoCapture(0)
 
@@ -21,7 +23,7 @@ cv.normalize(roi_hist, roi_hist, 0, 255, cv.NORM_MINMAX)
 
 term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
-while(1):
+while True:
     ret, frame = cap.read()
 
     if ret == True:
@@ -35,18 +37,14 @@ while(1):
         mid_x, mid_y = x + w // 2, y + h // 2
         if not math.isclose(mid_x, total_mid_x, total_width // 10):
             if mid_x < total_mid_x:
-                # Move left
-                print("Move Left")
+                clockwise()
             else:
-                # Move right
-                print("Move Right")
+                counterclockwise()
         if not math.isclose(mid_y, total_mid_y, total_height // 10):
             if mid_y < total_mid_y:
-                # Move up
-                print("Move Up")
+                double_clockwise()
             else:
-                # Move down
-                print("Move Down")
+                double_counterclockwise()
         
 
         k = cv.waitKey(30) & 0xff

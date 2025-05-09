@@ -17,7 +17,7 @@ cv.normalize(roi_hist, roi_hist, 0, 255, cv.NORM_MINMAX)
 
 term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
-while(1):
+while True:
     ret, frame = cap.read()
 
     if ret == True:
