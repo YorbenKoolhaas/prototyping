@@ -8,14 +8,16 @@ from adafruit_motor import stepper
 
 
 def clockwise():
-	
+
 	global arr1
 	global arr2
 	
+	# rotating array for stepper control
 	arrOUT = arr1[3:] + arr1[:3]
 	arr1 = arr2
 	arr2 = arrOUT
 	
+	# send pulse to GPIO pins
 	GPIO.output(chan_list, arrOUT)
 	sleep(DELAY)
 	
@@ -55,14 +57,17 @@ if __name__ == '__main__':
 
 	pygame.init()
 
+	# delay between steps of the motors
 	DELAY = 0.001
 	chan_list = [23, 27, 18, 17]
 	chan_list.reverse()
 	
+	# used for turning motors on and off
 	ENA = PWMOutputDevice(25)
 	ENB = PWMOutputDevice(24)
 
 	pygame.display.set_mode((100, 100))
+
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setwarnings(False)
 
@@ -70,9 +75,11 @@ if __name__ == '__main__':
 		print(f'setup pin: {pin}')
 		GPIO.setup(pin, GPIO.OUT)
 
+	# pin control for middle motor
 	arr1 = [1, 1, 0, 0]
 	arr2 = [0, 1, 1, 0]
 
+	# control for left and right motors
 	kit = MotorKit()
 
 	try:
@@ -83,6 +90,7 @@ if __name__ == '__main__':
 		y_axis_backward = False
 
 		while True:
+			# pygame for capturing key events
 			events = pygame.event.get()
 			for event in events:
 
@@ -115,13 +123,9 @@ if __name__ == '__main__':
 						y_axis_backward = False
 
 			if x_axis_forward:
-				kit.stepper1.onestep(direction=stepper.FORWARD, style=stepper.SINGLE)
-				kit.stepper2.onestep(direction=stepper.BACKWARD, style=stepper.SINGLE)
-				sleep(DELAY)
+				double_clockwise()
 			if x_axis_backward:
-				kit.stepper1.onestep(direction=stepper.BACKWARD, style=stepper.SINGLE)
-				kit.stepper2.onestep(direction=stepper.FORWARD, style=stepper.SINGLE)
-				sleep(DELAY)
+				double_counterclockwise()
 
 			if y_axis_forward:
 				clockwise()
@@ -131,6 +135,5 @@ if __name__ == '__main__':
 	except KeyboardInterrupt:
 		print('Program stopped by user')
 		GPIO.output(chan_list, (0, 0, 0, 0))
+		GPIO.cleanup()
 		sys.exit()
-
-	GPIO.cleanup()

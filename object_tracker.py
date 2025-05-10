@@ -1,6 +1,8 @@
 import numpy as np
 import cv2 as cv
 
+opt = 'mean'  # 'mean' or 'cam'
+
 cap = cv.VideoCapture(0)
 
 ret, frame = cap.read()
@@ -24,13 +26,21 @@ while True:
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
         dst = cv.calcBackProject([hsv], [0], roi_hist, [0, 180], 1)
 
-        ret, track_window = cv.meanShift(dst, bbox, term_crit)
+        if opt == 'mean':
+            ret, track_window = cv.meanShift(dst, bbox, term_crit)
+            dx, dy = track_window[0] - x, track_window[1] - y
+            x, y, w, h = track_window
+            img2 = cv.rectangle(frame, (x, y), (x+w, y+h), 255, 2)
+        
+        elif opt == 'cam':
+            ret, track_window = cv.CamShift(dst, bbox, term_crit)
+            dx, dy = track_window[0] - x, track_window[1] - y
+            x, y, w, h = track_window
+            box_pts = cv.boxPoints(ret)
+            frame = cv.polylines(frame, [np.int32(box_pts)], True, 255, 2)
 
-        dx, dy = track_window[0] - x, track_window[1] - y
-        x, y, w, h = track_window
-        img2 = cv.rectangle(frame, (x, y), (x+w, y+h), 255, 2)
-        img2 = cv.line(img2, (x + w//2, y + h//2), (x+dx + w//2, y+dy + h//2), (0, 0, 255), 2)
-        cv.imshow('gfg', img2)
+        frame = cv.line(frame, (x + w//2, y + h//2), (x+dx + w//2, y+dy + h//2), (0, 0, 255), 2)
+        cv.imshow('gfg', frame)
 
         k = cv.waitKey(30) & 0xff
         if k == 27:
