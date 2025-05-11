@@ -126,7 +126,7 @@ if __name__ == '__main__':
                     double_counterclockwise()
             
             # If escape is pressed, exit the loop
-            k = cv.waitKey(30) & 0xff
+            k = cv.waitKey(5) & 0xff
             if k == 27:
                 break
         else:

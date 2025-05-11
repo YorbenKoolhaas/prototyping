@@ -42,7 +42,7 @@ while True:
         frame = cv.line(frame, (x + w//2, y + h//2), (x+dx + w//2, y+dy + h//2), (0, 0, 255), 2)
         cv.imshow('gfg', frame)
 
-        k = cv.waitKey(30) & 0xff
+        k = cv.waitKey(5) & 0xff
         if k == 27:
             break
     else:
