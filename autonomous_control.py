@@ -98,6 +98,9 @@ if __name__ == '__main__':
     # termination criteria for the mean shift algorithm
     term_crit = (cv.TERM_CRITERIA_EPS | cv.TERM_CRITERIA_COUNT, 10, 1)
 
+    ENA.value = 1
+    ENB.value = 1
+
     while True:
         ret, frame = cap.read()
 
@@ -108,6 +111,8 @@ if __name__ == '__main__':
             ret, track_window = cv.meanShift(dst, bbox, term_crit)
 
             x, y, w, h = track_window
+            img2 = cv.rectangle(frame, (x, y), (x+w, y+h), 255, 2)
+            cv.imshow('gfg', frame)
 
             mid_x, mid_y = x + w // 2, y + h // 2
 
@@ -132,6 +137,8 @@ if __name__ == '__main__':
         else:
             break
     
+    ENA.value = 0
+    ENB.value = 0
     # Close all windows
     cap.release()
     cv.destroyAllWindows()
