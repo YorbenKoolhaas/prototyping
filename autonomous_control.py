@@ -131,6 +131,7 @@ if __name__ == '__main__':
                     double_counterclockwise()
             
             # If escape is pressed, exit the loop
+            # change the value in waitKey to change speed of motors
             k = cv.waitKey(5) & 0xff
             if k == 27:
                 break
